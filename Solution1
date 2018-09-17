@@ -1,0 +1,230 @@
+package com.baidu.rigel.talkingman.trainer.service;
+
+import java.util.*;
+
+/**
+ * Description: ${}
+ * Author: wangcaixia01
+ * Date: 2018/9/12
+ * Time: 下午4:30
+ */
+public class Solution {
+
+    public static void main(String[] args) {
+        String[] str1 = {"a", "b", "c", "a", "c", "c"};
+        String[] str2 = {"aa", "bb", "ab", "ba"};
+        String[] str3 = {"abc", "acb", "bac", "bca", "cab", "cba"};
+        String[] str4 = {"abcd", "cdab", "adcb", "cbad"};
+//        numSpecialEquivGroups(str1);
+//        numSpecialEquivGroups(str2);
+//        numSpecialEquivGroups(str3);
+//        numSpecialEquivGroups(str4);
+
+//        numSpecialEquivGroups2(str1);
+//        numSpecialEquivGroups2(str2);
+//        numSpecialEquivGroups2(str3);
+//        numSpecialEquivGroups2(str4);
+
+//        String s = "bloveleetcode";
+//        System.out.println("Output: " + firstUniqChar2(s));
+
+        String sa = "A man, a plan, a canal: Panama";
+        String sb = "race a car";
+        boolean a = isPalindrome(sb);
+        System.out.println("result:" + a);
+    }
+
+    public boolean isPalindromes(String s) {
+        if (s == null) {
+            return false;
+        }
+        if ("".equals(s) || s.length() <= 0) {
+            return true;
+        }
+        char[] chars = s.toCharArray();
+        int i = 0, j=chars.length-1;
+        while(i<=j)
+        {
+            if(!isCharNum(chars[i]))
+            {
+                i++;
+                continue;
+            }
+            if(!isCharNum(chars[j]))
+            {
+                j--;
+                continue;
+            }
+            if(toLowerCase(chars[i])==toLowerCase(chars[j]))
+            {
+                i++;
+                j--;
+                continue;
+            }
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isCharNum(char c) {
+        return ((c >= '0' && c <= '9') ||
+                (c >= 'A' && c <= 'Z') ||
+                (c >= 'a' && c <= 'z'));
+    }
+
+    private char toLowerCase(char c)
+    {
+        char diff = (char)('a'-'A');
+        if(c>='A'&& c<='Z')
+        {
+            return (char)(c+32);
+        }
+        return c;
+    }
+
+    // 判断是否是回文串
+    public static boolean isPalindrome(String s) {
+        if (s == null) {
+            return false;
+        }
+        if ("".equals(s) || s.length() <= 0) {
+            return true;
+        }
+        String str = s.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+        char[] c = str.toCharArray();
+        int low = 0;
+        int high = c.length - 1;
+        while (low <= high) {
+            if (c[low] == c[high]) {
+                low++;
+                high--;
+                continue;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public static int firstUniqChar2(String s) {
+        int freq [] = new int[26];
+        for(int i = 0; i < s.length(); i++) {
+            System.out.println("###s.charAt(i): " + s.charAt(i));
+            System.out.println("###s.charAt(i)-a: " + (s.charAt(i) - 'a'));
+
+            freq[s.charAt(i) - 'a']++;
+        }
+        for(int i = 0; i < s.length(); i ++) {
+            if (freq[s.charAt(i) - 'a'] == 1) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static int firstUniqChar(String s) {
+        if (s == null || "".equals(s) || s.length() <= 0 || s.isEmpty()) {
+            return -1;
+        }
+        Map<String, Integer> uniqMap = new HashMap<>();
+        for (int i = 0; i < s.length(); i++) {
+            String currChar = s.substring(i, i + 1);
+            if (uniqMap.containsKey(currChar)) {
+                uniqMap.put(currChar, uniqMap.get(currChar) + 1);
+            } else {
+                uniqMap.put(currChar, 1);
+            }
+        }
+        for (int i = 0; i < s.length(); i++) {
+            if (uniqMap.get(s.substring(i, i + 1)) <= 1) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static int numSpecialEquivGroups2(String[] A) {
+        Set<String> seen = new HashSet();
+        for (String S: A) {
+            int[] count = new int[52];
+            for (int i = 0; i < S.length(); ++i) {
+                count[S.charAt(i) - 'a' + 26 * (i % 2)]++;
+                System.out.println("Char: " + S.charAt(i));
+                System.out.println("Index: " + (S.charAt(i) - 'a' + 26 * (i % 2)));
+            }
+            seen.add(Arrays.toString(count));
+        }
+        System.out.println("Output: " + seen);
+        return seen.size();
+    }
+
+    public static int numSpecialEquivGroups(String[] A) {
+        if (A == null || A.length == 0) {
+            return -1;
+        }
+        Map<Integer, List<String>> resu = new HashMap<>();
+        for (int i = 0; i < A.length; i++) {
+            if (resu.isEmpty()) {
+                List<String> list = new ArrayList<>();
+                list.add(A[i]);
+                resu.put(i, list);
+            } else {
+                boolean flag = false;
+                for (Integer key : resu.keySet()) {
+                    List<String> v = resu.get(key);
+                    for (int j = 0; j < v.size(); j++) {
+                        if (isSpecialEquivalent(v.get(j), A[i])) {
+                            resu.get(key).add(A[i]);
+                            flag = true;
+                            break;
+                        } else {
+                            continue;
+                        }
+                    }
+                    if (flag == true) {
+                        break;
+                    }
+                }
+                if (flag == false) {
+                    List<String> list = new ArrayList<>();
+                    list.add(A[i]);
+                    resu.put(i, list);
+                }
+            }
+        }
+        System.out.println("Output: " + resu.keySet().size());
+        System.out.println("Explanation: " + resu.keySet().size() + " groups " + resu.values());
+        return 1;
+    }
+
+    public static boolean isSpecialEquivalent(String s1, String s2) {
+        if (isStrEmpty(s1) || isStrEmpty(s2) || s1.length() != s2.length()) {
+            return false;
+        }
+        // s1、s2偶数位
+        Set<String> odds1 = new HashSet<>();
+        Set<String> odds2 = new HashSet<>();
+        // s1、s2奇数位
+        Set<String> evens1 = new HashSet<>();
+        Set<String> evens2 = new HashSet<>();
+        for (int i = 0; i < s1.length(); i++) {
+            if (i % 2 == 0) {
+                odds1.add(s1.substring(i, i+1));
+                odds2.add(s2.substring(i, i+1));
+            } else {
+                evens1.add(s1.substring(i, i+1));
+                evens2.add(s2.substring(i, i+1));
+            }
+        }
+        if (odds1.equals(odds2) && evens1.equals(evens2)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean isStrEmpty(String s) {
+        return s == null || "".equals(s) || s.length() <= 0 || s.isEmpty();
+    }
+}
